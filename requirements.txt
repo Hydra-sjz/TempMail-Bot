@@ -2,3 +2,4 @@ pyrogram
 requests
 wget
 
+Flask==2.2.2
