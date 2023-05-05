@@ -1,10 +1,22 @@
-from http.server import BaseHTTPRequestHandler
- 
-class handler(BaseHTTPRequestHandler):
- 
-    def do_GET(self):
-        self.send_response(200)
-        self.send_header('Content-type','text/plain')
-        self.end_headers()
-        self.wfile.write('Hello, world!'.encode('utf-8'))
-        return
+from jinja2 import Environment, FileSystemLoader
+from sanic import Sanic, response
+
+env = Environment(loader=FileSystemLoader("api/templates"))
+
+app = Sanic(__name__)
+
+
+@app.route("/")
+async def _index(request):
+    title = "tg-serverless"
+    description = "A Telegram bot Python app use Vercel as Serverless Function!"
+    color = "#2962ff"
+    repo = "https://github.com/Hydra-sjz/TempMail-Bot"
+
+    template = env.get_template("app.html")
+    content = template.render(title=title, description=description, color=color, repo=repo)
+    return response.html(content, status=200)
+
+
+if __name__ == "__main__":
+    app.run(debug=True, auto_reload=True, host="0.0.0.0", port=3000)
